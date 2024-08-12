@@ -1,0 +1,23 @@
+  
+  /* กำหนดความกว้างและความยาวของ select */
+  #yearSelect {
+    width: 150px; /* กำหนดความกว้างของ select */
+    height: 10px; /* กำหนดความสูงของ select */
+    font-size: 14px; /* ขนาดฟอนต์ */
+}
+
+
+.body {
+    color: rgb(15, 78, 150); /* ทำให้ข้อความทั้งหมดใน body เป็นสีฟ้า */
+}
+
+
+footer{
+    background:#0f579b;
+    padding: 10px 0;
+    text-align: center;
+    color: #fff;
+}
+footer p{
+    margin:0;
+}
