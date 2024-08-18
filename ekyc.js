@@ -27,18 +27,7 @@ app.use(cors());
 app.get('/ekyc-year', (req, res) => {
   const year = req.query.year;
 
-
-  // //ไม่นับซ้ำ
-  // const sql = `   
-  //   SELECT DATE_FORMAT(date_ekyc, '%m') as month, 
-  //          SUM(CASE WHEN max_address IN ('TG01', 'TG02', 'TG03', 'TG04', 'TG05', 'TG06', 'TG07', 'TG08', 'TG09', 'TG10') THEN 1 ELSE 0 END) as group1,
-  //          SUM(CASE WHEN max_address IN ('TG11', 'TG12', 'TG13', 'TG14', 'TG15', 'TG16', 'TG17', 'TG18') THEN 1 ELSE 0 END) as group2,
-  //          SUM(CASE WHEN max_address IN ('TG19', 'TG20', 'TG21', 'TG22', 'TG23', 'TG24', 'TG25') THEN 1 ELSE 0 END) as group3
-  //   FROM ekyc_detail
-  //   WHERE YEAR(date_ekyc) = ?
-  //   GROUP BY month
-  //   ORDER BY month
-  // `;
+  
   const sql = `
   SELECT DATE_FORMAT(date_ekyc, '%m') as month,  
          COUNT(DISTINCT CASE WHEN max_address IN ('TG01', 'TG02', 'TG03', 'TG04', 'TG05', 'TG06', 'TG07', 'TG08', 'TG09', 'TG10') THEN mem_id ELSE NULL END) as group1,
@@ -77,6 +66,18 @@ app.get('/ekyc-year', (req, res) => {
     });
 
     const labels = Object.keys(monthlyCounts.group1);
+    // บันทึกเวลาปัจจุบัน
+    const updatedAt = new Date().toLocaleString('th-TH', {
+      timeZone: 'Asia/Bangkok',
+      hour12: false,
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+
     const response = {
       labels: labels,
       datasets: [
@@ -99,7 +100,8 @@ app.get('/ekyc-year', (req, res) => {
           data: Object.values(monthlyCounts.group3)
         }
       ],
-      total_count: totalCount // เพิ่มยอดรวมทั้งหมดใน response
+      total_count: totalCount, // เพิ่มยอดรวมทั้งหมดใน response
+      updated_at: updatedAt // เพิ่มเวลาที่อัปเดตล่าสุดใน response
     };
 
     res.json(response);
